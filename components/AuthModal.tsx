@@ -4,7 +4,7 @@ import React, { useState } from 'react';
 interface AuthModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onLogin: (name: string) => void;
+  onLogin: (name: string, email: string, isRegistering: boolean) => void;
 }
 
 const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
@@ -17,16 +17,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
     e.preventDefault();
     if (isRegistering && !formData.name) return;
     if (!formData.email || !formData.password) return;
-    
-    // Simular cadastro/login
-    onLogin(formData.name || formData.email.split('@')[0]);
+
+    // Passar dados completos incluindo isRegistering
+    const userName = formData.name || formData.email.split('@')[0];
+    onLogin(userName, formData.email, isRegistering);
   };
 
   return (
     <div className="fixed inset-0 z-[110] flex items-center justify-center p-4">
       <div className="absolute inset-0 bg-stone-950/80 backdrop-blur-md" onClick={onClose}></div>
       <div className="relative w-full max-w-md bg-stone-900 border border-stone-800 rounded-3xl p-8 shadow-2xl">
-        <button 
+        <button
           onClick={onClose}
           className="absolute top-6 right-6 text-stone-500 hover:text-stone-300"
         >
@@ -40,8 +41,8 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
             {isRegistering ? 'CRIAR CONTA' : 'BEM-VINDO DE VOLTA'}
           </h2>
           <p className="text-stone-500 text-sm">
-            {isRegistering 
-              ? 'Cadastre-se para aproveitar os 10% de desconto e finalizar seu pedido.' 
+            {isRegistering
+              ? 'Cadastre-se para aproveitar os 10% de desconto e finalizar seu pedido.'
               : 'Entre para continuar com sua experiência Je Burgues.'}
           </p>
         </div>
@@ -50,11 +51,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
           {isRegistering && (
             <div className="space-y-1">
               <label className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Nome Completo</label>
-              <input 
-                type="text" 
+              <input
+                type="text"
                 required
                 value={formData.name}
-                onChange={e => setFormData({...formData, name: e.target.value})}
+                onChange={e => setFormData({ ...formData, name: e.target.value })}
                 className="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition-colors"
                 placeholder="Ex: João Silva"
               />
@@ -63,11 +64,11 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
           <div className="space-y-1">
             <label className="text-[10px] font-bold uppercase tracking-widest text-stone-500">E-mail</label>
-            <input 
-              type="email" 
+            <input
+              type="email"
               required
               value={formData.email}
-              onChange={e => setFormData({...formData, email: e.target.value})}
+              onChange={e => setFormData({ ...formData, email: e.target.value })}
               className="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition-colors"
               placeholder="exemplo@email.com"
             />
@@ -75,17 +76,17 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
 
           <div className="space-y-1">
             <label className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Senha</label>
-            <input 
-              type="password" 
+            <input
+              type="password"
               required
               value={formData.password}
-              onChange={e => setFormData({...formData, password: e.target.value})}
+              onChange={e => setFormData({ ...formData, password: e.target.value })}
               className="w-full bg-stone-950 border border-stone-800 rounded-xl px-4 py-3 text-sm focus:outline-none focus:border-amber-500 transition-colors"
               placeholder="••••••••"
             />
           </div>
 
-          <button 
+          <button
             type="submit"
             className="w-full py-4 bg-amber-500 text-stone-950 font-bold uppercase tracking-widest rounded-xl hover:bg-amber-400 transition-all mt-4"
           >
@@ -96,7 +97,7 @@ const AuthModal: React.FC<AuthModalProps> = ({ isOpen, onClose, onLogin }) => {
         <div className="mt-8 text-center pt-6 border-t border-stone-800">
           <p className="text-stone-500 text-xs">
             {isRegistering ? 'Já possui uma conta?' : 'Não tem uma conta?'}
-            <button 
+            <button
               onClick={() => setIsRegistering(!isRegistering)}
               className="ml-2 text-amber-500 font-bold hover:underline"
             >

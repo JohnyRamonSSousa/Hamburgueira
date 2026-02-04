@@ -19,3 +19,17 @@ export interface CartItem extends BurgerProduct {
   quantity: number;
   customIngredients?: string[];
 }
+
+export interface User {
+  name: string;
+  email: string;
+  registeredAt: Date;
+}
+
+export interface Order {
+  id: string;
+  date: Date;
+  items: CartItem[];
+  total: number;
+  status: 'pending' | 'preparing' | 'delivered';
+}
