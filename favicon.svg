@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100">
+  <!-- Pão de cima -->
+  <ellipse cx="50" cy="25" rx="35" ry="12" fill="#F4A460"/>
+  <ellipse cx="50" cy="25" rx="35" ry="10" fill="#DEB887"/>
+  <!-- Gergelim -->
+  <circle cx="35" cy="24" r="2" fill="#FFF8DC"/>
+  <circle cx="45" cy="22" r="2" fill="#FFF8DC"/>
+  <circle cx="55" cy="23" r="2" fill="#FFF8DC"/>
+  <circle cx="65" cy="25" r="2" fill="#FFF8DC"/>
+  
+  <!-- Alface -->
+  <ellipse cx="50" cy="38" rx="32" ry="6" fill="#90EE90"/>
+  
+  <!-- Queijo -->
+  <rect x="18" y="42" width="64" height="8" fill="#FFD700" rx="2"/>
+  
+  <!-- Carne -->
+  <ellipse cx="50" cy="56" rx="30" ry="8" fill="#8B4513"/>
+  
+  <!-- Pão de baixo -->
+  <ellipse cx="50" cy="70" rx="35" ry="10" fill="#DEB887"/>
+  <path d="M 15 70 Q 50 80, 85 70" fill="#CD853F"/>
+</svg>
