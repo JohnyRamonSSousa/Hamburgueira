@@ -23,21 +23,21 @@ const Footer: React.FC = () => {
             <span className="font-display text-xl tracking-tighter">JE <span className="text-amber-500">BURGUES</span></span>
           </div>
           <p className="text-stone-500 max-w-sm mb-8">
-            A intersecção entre as artes culinárias de alto padrão e a inteligência generativa. Nós não apenas cozinhamos; calculamos a mordida perfeita.
+            A intersecção entre as artes culinárias de alto padrão e ingredientes premium. Nós não apenas cozinhamos; criamos experiências perfeitas.
           </p>
-          
+
           <div className="mb-8">
             <h4 className="text-stone-300 font-bold text-sm uppercase tracking-widest mb-4">Inscreva-se na nossa newsletter</h4>
             <form onSubmit={handleSubscribe} className="flex gap-2 max-w-md">
-              <input 
-                type="email" 
-                placeholder="Seu e-mail" 
+              <input
+                type="email"
+                placeholder="Seu e-mail"
                 value={email}
                 onChange={(e) => setEmail(e.target.value)}
                 className="bg-stone-900 border border-stone-800 rounded-lg px-4 py-2 flex-1 text-sm focus:outline-none focus:border-amber-500"
               />
-              <button 
-                type="submit" 
+              <button
+                type="submit"
                 className="bg-amber-500 text-stone-950 px-6 py-2 rounded-lg font-bold text-xs uppercase hover:bg-amber-400 transition-colors whitespace-nowrap"
               >
                 {subscribed ? 'Inscrito!' : 'Enviar'}
@@ -51,8 +51,8 @@ const Footer: React.FC = () => {
               𝕏
             </a>
             <a href="#" className="w-10 h-10 border border-stone-800 rounded-full flex items-center justify-center text-stone-400 hover:border-amber-500 hover:text-amber-500 transition-all">
-               <span className="sr-only">Instagram</span>
-               IG
+              <span className="sr-only">Instagram</span>
+              IG
             </a>
           </div>
         </div>

@@ -182,7 +182,7 @@ export const MENU_ITEMS: BurgerProduct[] = [
     name: 'Mandioca Frita',
     description: 'Mandioca crocante por fora e macia por dentro.',
     price: 15.00,
-    image: 'https://images.unsplash.com/photo-1585937421612-70a008356fbe?auto=format&fit=crop&q=80&w=800',
+    image: '/mandioca-frita.jpg',
     category: 'sides'
   },
 
@@ -192,7 +192,7 @@ export const MENU_ITEMS: BurgerProduct[] = [
     name: 'Limonada Neon',
     description: 'Limonada fresca com um toque de chá de clitória (butterfly pea tea).',
     price: 12.00,
-    image: 'https://images.unsplash.com/photo-1582610116397-edb318620f90?auto=format&fit=crop&q=80&w=800',
+    image: '/limonada-neon.jpg',
     category: 'drinks'
   },
   {
@@ -240,7 +240,7 @@ export const MENU_ITEMS: BurgerProduct[] = [
     name: 'Água de Coco',
     description: 'Água de coco natural gelada.',
     price: 8.00,
-    image: 'https://images.unsplash.com/photo-1525385133512-2f3bdd039054?auto=format&fit=crop&q=80&w=800',
+    image: '/agua-coco.jpg',
     category: 'drinks'
   }
 ];

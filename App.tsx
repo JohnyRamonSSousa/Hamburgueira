@@ -8,6 +8,7 @@ import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import CustomBurgerModal from './components/CustomBurgerModal';
 import Dashboard from './components/Dashboard';
+import ScrollToTop from './components/ScrollToTop';
 import { BurgerProduct, CartItem, User } from './types';
 
 const App: React.FC = () => {
@@ -93,7 +94,15 @@ const App: React.FC = () => {
   return (
     <div className="min-h-screen bg-stone-950">
       {showDashboard && user ? (
-        <Dashboard user={user} onBackToMenu={() => setShowDashboard(false)} />
+        <Dashboard
+          user={user}
+          onBackToMenu={() => setShowDashboard(false)}
+          onAddToCart={handleAddToCart}
+          cartItems={cartItems}
+          onRemoveFromCart={handleRemoveFromCart}
+          onUpdateQuantity={handleUpdateQuantity}
+          onClearCart={handleClearCart}
+        />
       ) : (
         <>
           <Navbar
@@ -125,7 +134,7 @@ const App: React.FC = () => {
 
               <div className="max-w-3xl mx-auto px-4 relative z-10">
                 <h3 className="font-display text-4xl mb-6">POR QUE JE BURGUES?</h3>
-                <p className="text-stone-400 mb-12">Nossa cozinha é controlada por um algoritmo de sabor que garante a harmonia perfeita entre os ingredientes a cada pedido.</p>
+                <p className="text-stone-400 mb-12">Nossa cozinha utiliza técnicas premium que garantem a harmonia perfeita entre os ingredientes a cada pedido.</p>
 
                 <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
                   <div className="space-y-4 p-6 bg-stone-900/50 rounded-2xl border border-stone-800 hover:border-amber-500/30 transition-all">
@@ -195,6 +204,8 @@ const App: React.FC = () => {
           animation: marquee 30s linear infinite;
         }
       `}</style>
+
+      <ScrollToTop />
     </div>
   );
 };

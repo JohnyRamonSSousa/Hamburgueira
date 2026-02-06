@@ -24,19 +24,19 @@ const Hero: React.FC = () => {
           </div>
           <h1 className="font-display text-5xl md:text-7xl lg:text-9xl leading-[0.85] mb-6">
             SABOREIE A <br />
-            <span className="text-amber-500">INTELIGÊNCIA</span>
+            <span className="text-amber-500">PERFEIÇÃO</span>
           </h1>
           <p className="text-lg md:text-xl text-stone-400 max-w-lg mx-auto lg:mx-0 mb-10 leading-relaxed">
-            Onde a maestria culinária encontra a inteligência artificial. Descubra sabores criados por algoritmos e aperfeiçoados por humanos.
+            Onde a maestria culinária encontra ingredientes premium. Descubra sabores únicos criados com paixão e aperfeiçoados pela experiência.
           </p>
           <div className="flex flex-col sm:flex-row flex-wrap gap-4 justify-center lg:justify-start">
-            <button 
+            <button
               onClick={scrollToMenu}
               className="bg-amber-500 text-stone-950 px-8 py-4 font-bold uppercase tracking-widest rounded-full hover:bg-amber-400 transition-all hover:scale-105 active:scale-95 shadow-xl shadow-amber-500/20 w-full sm:w-auto"
             >
               Pedir Agora
             </button>
-            <button 
+            <button
               onClick={scrollToAbout}
               className="border border-stone-700 px-8 py-4 font-bold uppercase tracking-widest rounded-full hover:bg-stone-800 transition-all hover:border-stone-500 w-full sm:w-auto"
             >
@@ -47,9 +47,9 @@ const Hero: React.FC = () => {
 
         <div className="relative group mt-8 lg:mt-0 px-4 sm:px-0">
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950 via-transparent to-transparent"></div>
-          <img 
-            src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&q=80&w=1200" 
-            alt="Hambúrguer Hero" 
+          <img
+            src="https://images.unsplash.com/photo-1571091718767-18b5b1457add?auto=format&fit=crop&q=80&w=1200"
+            alt="Hambúrguer Hero"
             className="rounded-2xl shadow-2xl burger-shadow group-hover:scale-[1.02] transition-transform duration-700 w-full"
           />
           <div className="absolute -bottom-4 -right-2 md:-bottom-6 md:-right-6 bg-amber-500 text-stone-950 p-4 md:p-6 rounded-2xl shadow-xl animate-pulse">
