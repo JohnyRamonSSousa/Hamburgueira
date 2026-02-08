@@ -27,8 +27,8 @@ const Menu: React.FC<MenuProps> = ({ onAddToCart, isLoggedIn, onOpenCustomBurger
   const filteredItems = useMemo(() => {
     return MENU_ITEMS.filter(item => {
       const matchesCategory = activeCategory === 'todos' || item.category === activeCategory;
-      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) || 
-                           item.description.toLowerCase().includes(searchQuery.toLowerCase());
+      const matchesSearch = item.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        item.description.toLowerCase().includes(searchQuery.toLowerCase());
       return matchesCategory && matchesSearch;
     });
   }, [activeCategory, searchQuery]);
@@ -38,9 +38,9 @@ const Menu: React.FC<MenuProps> = ({ onAddToCart, isLoggedIn, onOpenCustomBurger
       <div className="max-w-7xl mx-auto px-4">
         <div className="text-center mb-16">
           <h2 className="font-display text-5xl md:text-6xl mb-4">O CARDÁPIO DIGITAL</h2>
-          
+
           <div className="max-w-md mx-auto mb-8 relative">
-            <input 
+            <input
               type="text"
               placeholder="Buscar no cardápio..."
               value={searchQuery}
@@ -57,11 +57,10 @@ const Menu: React.FC<MenuProps> = ({ onAddToCart, isLoggedIn, onOpenCustomBurger
               <button
                 key={cat.key}
                 onClick={() => setActiveCategory(cat.key)}
-                className={`px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${
-                  activeCategory === cat.key 
-                    ? 'bg-amber-500 text-stone-950' 
+                className={`px-6 py-2 rounded-full text-xs font-bold uppercase tracking-widest transition-all ${activeCategory === cat.key
+                    ? 'bg-amber-500 text-stone-950'
                     : 'bg-stone-800 text-stone-400 hover:bg-stone-700'
-                }`}
+                  }`}
               >
                 {cat.label}
               </button>
@@ -71,29 +70,19 @@ const Menu: React.FC<MenuProps> = ({ onAddToCart, isLoggedIn, onOpenCustomBurger
           {/* Banner de Montagem Personalizada */}
           <div className="max-w-4xl mx-auto mb-16 bg-gradient-to-r from-amber-500 to-amber-600 rounded-3xl p-1 flex flex-col md:flex-row items-center overflow-hidden shadow-2xl shadow-amber-500/10">
             <div className="bg-stone-950 w-full h-full rounded-[22px] p-8 md:p-12 flex flex-col md:flex-row items-center gap-8">
-               <div className="flex-1 text-center md:text-left">
-                  <span className="text-amber-500 font-bold text-xs uppercase tracking-widest mb-2 block">Exclusivo para Membros</span>
-                  <h3 className="font-display text-4xl md:text-5xl mb-4">MONTE DO SEU JEITO</h3>
-                  <p className="text-stone-400 text-sm max-w-sm">Escolha cada ingrediente, do pão ao molho, e crie sua própria obra-prima tech-gourmet.</p>
-               </div>
-               <div className="flex flex-col gap-3 min-w-[200px]">
-                  {isLoggedIn ? (
-                    <button 
-                      onClick={onOpenCustomBurger}
-                      className="bg-amber-500 text-stone-950 px-8 py-4 font-bold uppercase tracking-widest rounded-xl hover:bg-amber-400 transition-all flex items-center justify-center gap-2"
-                    >
-                      Começar Agora
-                    </button>
-                  ) : (
-                    <button 
-                      onClick={onOpenAuth}
-                      className="bg-stone-800 text-stone-100 px-8 py-4 font-bold uppercase tracking-widest rounded-xl hover:bg-stone-700 transition-all flex flex-col items-center"
-                    >
-                      <span>Entrar para Montar</span>
-                      <span className="text-[10px] opacity-60 font-normal mt-1">Recurso para cadastrados</span>
-                    </button>
-                  )}
-               </div>
+              <div className="flex-1 text-center md:text-left">
+                <span className="text-amber-500 font-bold text-xs uppercase tracking-widest mb-2 block">Disponível para Todos</span>
+                <h3 className="font-display text-4xl md:text-5xl mb-4">MONTE DO SEU JEITO</h3>
+                <p className="text-stone-400 text-sm max-w-sm">Escolha cada ingrediente, do pão ao molho, e crie sua própria obra-prima tech-gourmet.</p>
+              </div>
+              <div className="flex flex-col gap-3 min-w-[200px]">
+                <button
+                  onClick={onOpenCustomBurger}
+                  className="bg-amber-500 text-stone-950 px-8 py-4 font-bold uppercase tracking-widest rounded-xl hover:bg-amber-400 transition-all flex items-center justify-center gap-2"
+                >
+                  Começar Agora
+                </button>
+              </div>
             </div>
           </div>
         </div>
@@ -103,9 +92,9 @@ const Menu: React.FC<MenuProps> = ({ onAddToCart, isLoggedIn, onOpenCustomBurger
             {filteredItems.map(item => (
               <div key={item.id} className="group bg-stone-900 border border-stone-800 rounded-2xl overflow-hidden hover:border-amber-500/50 transition-all flex flex-col">
                 <div className="relative h-64 overflow-hidden">
-                  <img 
-                    src={item.image} 
-                    alt={item.name} 
+                  <img
+                    src={item.image}
+                    alt={item.name}
                     className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-stone-900/80 to-transparent"></div>
@@ -116,7 +105,7 @@ const Menu: React.FC<MenuProps> = ({ onAddToCart, isLoggedIn, onOpenCustomBurger
                     <span className="text-amber-500 font-bold whitespace-nowrap ml-2">R$ {item.price.toFixed(2)}</span>
                   </div>
                   <p className="text-stone-400 text-sm mb-6 flex-1">{item.description}</p>
-                  <button 
+                  <button
                     onClick={() => onAddToCart(item)}
                     className="w-full py-3 bg-stone-800 hover:bg-amber-500 hover:text-stone-950 font-bold uppercase tracking-tighter rounded-xl transition-all active:scale-95"
                   >

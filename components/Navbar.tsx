@@ -4,12 +4,9 @@ import React, { useState } from 'react';
 interface NavbarProps {
   cartCount: number;
   onOpenCart: () => void;
-  user: { name: string } | null;
-  onLogout: () => void;
-  onOpenAuth: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, user, onLogout, onOpenAuth }) => {
+const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
@@ -21,7 +18,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, user, onLogout, 
           <div className="flex items-center gap-2">
             <span className="font-display text-2xl tracking-tighter">JE <span className="text-amber-500">BURGUES</span></span>
           </div>
-          
+
           <div className="hidden md:flex items-center gap-8 text-sm font-semibold uppercase tracking-widest text-stone-400">
             <a href="#menu" className="hover:text-amber-500 transition-colors">Cardápio</a>
             <a href="#about" className="hover:text-amber-500 transition-colors">Sobre</a>
@@ -29,26 +26,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, user, onLogout, 
           </div>
 
           <div className="flex items-center gap-2 sm:gap-4">
-            {user ? (
-              <div className="hidden sm:flex items-center gap-3">
-                <span className="text-xs font-bold uppercase text-amber-500 tracking-widest">Olá, {user.name.split(' ')[0]}</span>
-                <button 
-                  onClick={onLogout}
-                  className="text-[10px] font-bold uppercase tracking-widest text-stone-500 hover:text-stone-300 transition-colors"
-                >
-                  Sair
-                </button>
-              </div>
-            ) : (
-              <button 
-                onClick={onOpenAuth}
-                className="hidden sm:block text-xs font-bold uppercase tracking-widest text-stone-300 hover:text-amber-500 transition-colors"
-              >
-                Entrar
-              </button>
-            )}
-
-            <button 
+            <button
               onClick={onOpenCart}
               className="relative p-2 text-stone-300 hover:text-amber-500 transition-colors"
             >
@@ -62,7 +40,7 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, user, onLogout, 
               )}
             </button>
 
-            <button 
+            <button
               onClick={toggleMenu}
               className="md:hidden p-2 text-stone-300 hover:text-amber-500 transition-colors"
             >
@@ -80,27 +58,6 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, user, onLogout, 
           <a href="#menu" onClick={toggleMenu} className="font-display text-4xl hover:text-amber-500 transition-colors border-b border-stone-800 pb-4">Cardápio</a>
           <a href="#about" onClick={toggleMenu} className="font-display text-4xl hover:text-amber-500 transition-colors border-b border-stone-800 pb-4">Sobre</a>
           <a href="#contact" onClick={toggleMenu} className="font-display text-4xl hover:text-amber-500 transition-colors border-b border-stone-800 pb-4">Contato</a>
-          
-          <div className="pt-8 flex flex-col gap-4">
-            {user ? (
-              <div className="flex flex-col gap-2">
-                <span className="text-sm font-bold uppercase text-amber-500 tracking-widest">Olá, {user.name}</span>
-                <button 
-                  onClick={() => { onLogout(); toggleMenu(); }}
-                  className="text-left font-display text-2xl text-stone-500 hover:text-stone-300"
-                >
-                  Sair da Conta
-                </button>
-              </div>
-            ) : (
-              <button 
-                onClick={() => { onOpenAuth(); toggleMenu(); }}
-                className="w-full py-4 bg-stone-100 text-stone-950 font-bold uppercase tracking-widest rounded-xl"
-              >
-                Fazer Login / Cadastro
-              </button>
-            )}
-          </div>
         </div>
       </div>
     </>

@@ -7,8 +7,9 @@ import Cart from './components/Cart';
 import Footer from './components/Footer';
 import AuthModal from './components/AuthModal';
 import CustomBurgerModal from './components/CustomBurgerModal';
-import Dashboard from './components/Dashboard';
 import ScrollToTop from './components/ScrollToTop';
+import Checkout, { OrderData } from './components/Checkout';
+import OrderConfirmationModal from './components/OrderConfirmationModal';
 import { BurgerProduct, CartItem, User } from './types';
 
 const App: React.FC = () => {
@@ -16,8 +17,10 @@ const App: React.FC = () => {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
   const [isCustomBurgerOpen, setIsCustomBurgerOpen] = useState(false);
+  const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
+  const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
+  const [confirmedOrder, setConfirmedOrder] = useState<OrderData | null>(null);
   const [user, setUser] = useState<User | null>(null);
-  const [showDashboard, setShowDashboard] = useState(false);
 
   const handleAddToCart = (product: BurgerProduct, customIngredients?: string[]) => {
     setCartItems(prev => {
@@ -71,95 +74,113 @@ const App: React.FC = () => {
     };
     setUser(userData);
     setIsAuthModalOpen(false);
-
-    // Apenas mostrar dashboard se for um novo cadastro
-    if (isRegistering) {
-      setShowDashboard(true);
-    }
   };
 
   const handleLogout = () => {
     setUser(null);
-    setShowDashboard(false);
+  };
+
+  const handleConfirmOrder = (orderData: OrderData) => {
+    console.log('Pedido confirmado:', orderData);
+    // Aqui você pode integrar com backend no futuro
+    setConfirmedOrder(orderData);
+    setCartItems([]);
+    setIsCheckoutOpen(false);
+    setIsConfirmationOpen(true);
   };
 
   useEffect(() => {
-    if (isCartOpen || isAuthModalOpen || isCustomBurgerOpen) {
+    if (isCartOpen || isAuthModalOpen || isCustomBurgerOpen || isCheckoutOpen || isConfirmationOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [isCartOpen, isAuthModalOpen, isCustomBurgerOpen]);
+  }, [isCartOpen, isAuthModalOpen, isCustomBurgerOpen, isCheckoutOpen, isConfirmationOpen]);
 
   return (
     <div className="min-h-screen bg-stone-950">
-      {showDashboard && user ? (
-        <Dashboard
-          user={user}
-          onBackToMenu={() => setShowDashboard(false)}
-          onAddToCart={handleAddToCart}
-          cartItems={cartItems}
-          onRemoveFromCart={handleRemoveFromCart}
-          onUpdateQuantity={handleUpdateQuantity}
-          onClearCart={handleClearCart}
+      <Navbar
+        cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
+        onOpenCart={() => setIsCartOpen(true)}
+      />
+
+      <main>
+        <Hero />
+
+        <section className="py-12 md:py-20 bg-amber-500 overflow-hidden">
+          <div className="whitespace-nowrap flex animate-marquee font-display text-stone-950 text-4xl md:text-7xl uppercase opacity-20 select-none">
+            PROMOÇÃO 10% OFF PELO SITE &bull; MONTE SEU BURGER &bull; TECH GOURMET &bull; FUTURO DO SABOR &bull; SABORES INTENSOS &bull; PROMOÇÃO 10% OFF PELO SITE &bull; MONTE SEU BURGER &bull; TECH GOURMET
+          </div>
+        </section>
+
+        <Menu
+          onAddToCart={(item) => handleAddToCart(item)}
+          isLoggedIn={!!user}
+          onOpenCustomBurger={() => setIsCustomBurgerOpen(true)}
+          onOpenAuth={() => setIsAuthModalOpen(true)}
         />
-      ) : (
-        <>
-          <Navbar
-            cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
-            onOpenCart={() => setIsCartOpen(true)}
-            user={user}
-            onLogout={handleLogout}
-            onOpenAuth={() => setIsAuthModalOpen(true)}
-          />
 
-          <main>
-            <Hero />
+        <section id="about" className="py-24 bg-stone-950 text-center relative overflow-hidden">
+          <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-b from-transparent via-amber-500/5 to-transparent pointer-events-none"></div>
 
-            <section className="py-12 md:py-20 bg-amber-500 overflow-hidden">
-              <div className="whitespace-nowrap flex animate-marquee font-display text-stone-950 text-4xl md:text-7xl uppercase opacity-20 select-none">
-                PROMOÇÃO 10% OFF PELO SITE &bull; MONTE SEU BURGER &bull; TECH GOURMET &bull; FUTURO DO SABOR &bull; SABORES INTENSOS &bull; PROMOÇÃO 10% OFF PELO SITE &bull; MONTE SEU BURGER &bull; TECH GOURMET
+          <div className="max-w-4xl mx-auto px-4 relative z-10">
+            <h3 className="font-display text-5xl mb-8 text-amber-500">NOSSA HISTÓRIA</h3>
+
+            <div className="space-y-8 text-left">
+              {/* História principal */}
+              <div className="bg-stone-900/50 rounded-2xl border border-stone-800 p-8 hover:border-amber-500/30 transition-all">
+                <p className="text-stone-300 leading-relaxed text-lg mb-6">
+                  Tudo começou de forma <span className="text-amber-500 font-semibold">despretenciosa</span> em uma pequena cozinha,
+                  onde a paixão por criar hambúrgueres únicos era maior que qualquer ambição comercial.
+                  O que era apenas um hobby entre amigos, se transformou em algo especial quando começamos a receber
+                  pedidos de vizinhos e conhecidos.
+                </p>
+
+                <p className="text-stone-300 leading-relaxed text-lg mb-6">
+                  Palavra por palavra, nossos hambúrgueres ganharam fama no bairro. Os <span className="text-amber-500 font-semibold">elogios dos visitantes</span> eram
+                  constantes: "o melhor hambúrguer que já provei", "ingredientes de qualidade incomparável", "sabor que não se esquece".
+                  Cada feedback positivo nos motivava a aprimorar ainda mais nossas receitas e técnicas.
+                </p>
+
+                <p className="text-stone-300 leading-relaxed text-lg mb-6">
+                  Com o passar do tempo, a demanda cresceu tanto que percebemos: era hora de <span className="text-amber-500 font-semibold">profissionalizar</span> o negócio.
+                  Foi aí que decidimos criar este site, para que mais pessoas pudessem experimentar nossos hambúrgueres
+                  e ter acesso facilitado ao nosso cardápio. A tecnologia veio para nos ajudar a alcançar mais clientes
+                  sem perder a essência artesanal que nos tornou especiais.
+                </p>
+
+                <p className="text-stone-300 leading-relaxed text-lg">
+                  Hoje, continuamos com o mesmo <span className="text-amber-500 font-semibold">compromisso com a qualidade</span> que nos trouxe até aqui:
+                  ingredientes selecionados, preparo cuidadoso e um sabor que conquista a cada mordida.
+                  Nosso objetivo é simples: fazer você se sentir em casa, com um hambúrguer que transmite
+                  todo o carinho e dedicação que colocamos em cada receita.
+                </p>
               </div>
-            </section>
 
-            <Menu
-              onAddToCart={(item) => handleAddToCart(item)}
-              isLoggedIn={!!user}
-              onOpenCustomBurger={() => setIsCustomBurgerOpen(true)}
-              onOpenAuth={() => setIsAuthModalOpen(true)}
-            />
-
-            <section id="about" className="py-24 bg-stone-950 text-center relative overflow-hidden">
-              <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-gradient-to-b from-transparent via-amber-500/5 to-transparent pointer-events-none"></div>
-
-              <div className="max-w-3xl mx-auto px-4 relative z-10">
-                <h3 className="font-display text-4xl mb-6">POR QUE JE BURGUES?</h3>
-                <p className="text-stone-400 mb-12">Nossa cozinha utiliza técnicas premium que garantem a harmonia perfeita entre os ingredientes a cada pedido.</p>
-
-                <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 text-center">
-                  <div className="space-y-4 p-6 bg-stone-900/50 rounded-2xl border border-stone-800 hover:border-amber-500/30 transition-all">
-                    <div className="text-amber-500 font-display text-5xl">01</div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-stone-100">Ingredientes de Precisão</p>
-                    <p className="text-[10px] text-stone-500 uppercase tracking-tighter">Rastreabilidade Total</p>
-                  </div>
-                  <div className="space-y-4 p-6 bg-stone-900/50 rounded-2xl border border-stone-800 hover:border-amber-500/30 transition-all">
-                    <div className="text-amber-500 font-display text-5xl">02</div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-stone-100">Perfis Neurais</p>
-                    <p className="text-[10px] text-stone-500 uppercase tracking-tighter">Otimização de Aroma</p>
-                  </div>
-                  <div className="space-y-4 p-6 bg-stone-900/50 rounded-2xl border border-stone-800 hover:border-amber-500/30 transition-all">
-                    <div className="text-amber-500 font-display text-5xl">03</div>
-                    <p className="text-xs font-bold uppercase tracking-widest text-stone-100">Frescor em Tempo Real</p>
-                    <p className="text-[10px] text-stone-500 uppercase tracking-tighter">Just-in-Time Burger</p>
-                  </div>
+              {/* Valores */}
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mt-12">
+                <div className="space-y-4 p-6 bg-stone-900/50 rounded-2xl border border-stone-800 hover:border-amber-500/30 transition-all">
+                  <div className="text-amber-500 font-display text-5xl">🍔</div>
+                  <p className="text-sm font-bold uppercase tracking-widest text-stone-100">Qualidade Artesanal</p>
+                  <p className="text-xs text-stone-400">Feito com paixão desde o início</p>
+                </div>
+                <div className="space-y-4 p-6 bg-stone-900/50 rounded-2xl border border-stone-800 hover:border-amber-500/30 transition-all">
+                  <div className="text-amber-500 font-display text-5xl">❤️</div>
+                  <p className="text-sm font-bold uppercase tracking-widest text-stone-100">Clientes Satisfeitos</p>
+                  <p className="text-xs text-stone-400">Cada elogio nos motiva</p>
+                </div>
+                <div className="space-y-4 p-6 bg-stone-900/50 rounded-2xl border border-stone-800 hover:border-amber-500/30 transition-all">
+                  <div className="text-amber-500 font-display text-5xl">🌟</div>
+                  <p className="text-sm font-bold uppercase tracking-widest text-stone-100">Inovação Constante</p>
+                  <p className="text-xs text-stone-400">Tradição com tecnologia</p>
                 </div>
               </div>
-            </section>
-          </main>
+            </div>
+          </div>
+        </section>
+      </main>
 
-          <Footer />
-        </>
-      )}
+      <Footer />
 
       <Cart
         isOpen={isCartOpen}
@@ -168,11 +189,7 @@ const App: React.FC = () => {
         onRemove={handleRemoveFromCart}
         onUpdateQuantity={handleUpdateQuantity}
         onClearCart={handleClearCart}
-        isLoggedIn={!!user}
-        onOpenAuth={() => {
-          setIsCartOpen(false);
-          setIsAuthModalOpen(true);
-        }}
+        onOpenCheckout={() => setIsCheckoutOpen(true)}
       />
 
       <AuthModal
@@ -185,6 +202,19 @@ const App: React.FC = () => {
         isOpen={isCustomBurgerOpen}
         onClose={() => setIsCustomBurgerOpen(false)}
         onAddToCart={handleAddToCart}
+      />
+
+      <Checkout
+        isOpen={isCheckoutOpen}
+        onClose={() => setIsCheckoutOpen(false)}
+        items={cartItems}
+        onConfirmOrder={handleConfirmOrder}
+      />
+
+      <OrderConfirmationModal
+        isOpen={isConfirmationOpen}
+        onClose={() => setIsConfirmationOpen(false)}
+        orderData={confirmedOrder}
       />
 
       <style>{`
