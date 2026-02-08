@@ -11,6 +11,8 @@ import ScrollToTop from './components/ScrollToTop';
 import Checkout, { OrderData } from './components/Checkout';
 import OrderConfirmationModal from './components/OrderConfirmationModal';
 import { BurgerProduct, CartItem, User } from './types';
+import { db } from './firebase';
+import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 
 const App: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -80,13 +82,29 @@ const App: React.FC = () => {
     setUser(null);
   };
 
-  const handleConfirmOrder = (orderData: OrderData) => {
-    console.log('Pedido confirmado:', orderData);
-    // Aqui você pode integrar com backend no futuro
-    setConfirmedOrder(orderData);
-    setCartItems([]);
-    setIsCheckoutOpen(false);
-    setIsConfirmationOpen(true);
+  const handleConfirmOrder = async (orderData: OrderData) => {
+    try {
+      console.log('Salvando pedido no Firebase:', orderData);
+
+      // Salvar pedido no Firestore
+      const orderDoc = await addDoc(collection(db, 'orders'), {
+        ...orderData,
+        items: cartItems,
+        status: 'pending',
+        createdAt: serverTimestamp()
+      });
+
+      console.log('Pedido salvo com sucesso! ID:', orderDoc.id);
+
+      // Atualizar UI
+      setConfirmedOrder(orderData);
+      setCartItems([]);
+      setIsCheckoutOpen(false);
+      setIsConfirmationOpen(true);
+    } catch (error) {
+      console.error('Erro ao salvar pedido:', error);
+      alert('Erro ao confirmar pedido. Tente novamente.');
+    }
   };
 
   useEffect(() => {
