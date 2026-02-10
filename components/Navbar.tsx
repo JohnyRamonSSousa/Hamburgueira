@@ -1,15 +1,23 @@
-
 import React, { useState } from 'react';
+import { User } from '../types';
 
 interface NavbarProps {
   cartCount: number;
   onOpenCart: () => void;
+  user: User | null;
+  onLogout: () => void;
+  onOpenAuth: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
+const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, user, onLogout, onOpenAuth }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
 
   const toggleMenu = () => setIsMenuOpen(!isMenuOpen);
+
+  const getUserInitials = (name: string) => {
+    return name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
+  };
 
   return (
     <>
@@ -40,6 +48,42 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
               )}
             </button>
 
+            {user ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="w-10 h-10 rounded-full bg-stone-900 border border-stone-800 flex items-center justify-center text-xs font-bold text-amber-500 hover:border-amber-500 transition-all"
+                >
+                  {getUserInitials(user.name)}
+                </button>
+
+                {isProfileOpen && (
+                  <div className="absolute top-12 right-0 w-48 bg-stone-900 border border-stone-800 rounded-2xl p-2 shadow-2xl">
+                    <div className="px-4 py-3 border-b border-stone-800 mb-2">
+                      <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Olá,</p>
+                      <p className="text-sm font-bold truncate text-stone-200">{user.name}</p>
+                    </div>
+                    <button
+                      onClick={() => {
+                        onLogout();
+                        setIsProfileOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-red-500 hover:bg-stone-800 rounded-xl transition-colors"
+                    >
+                      Sair da Conta
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={onOpenAuth}
+                className="hidden sm:block px-6 py-2 bg-stone-900 hover:bg-stone-800 border border-stone-800 text-xs font-bold uppercase tracking-widest rounded-xl transition-all"
+              >
+                Entrar
+              </button>
+            )}
+
             <button
               onClick={toggleMenu}
               className="md:hidden p-2 text-stone-300 hover:text-amber-500 transition-colors"
@@ -52,12 +96,35 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart }) => {
         </div>
       </nav>
 
-      {/* Mobile Menu Drawer */}
       <div className={`fixed inset-0 z-[45] bg-stone-950 transition-transform duration-300 ease-in-out md:hidden ${isMenuOpen ? 'translate-x-0' : 'translate-x-full'}`}>
         <div className="flex flex-col h-full pt-24 px-6 space-y-8">
           <a href="#menu" onClick={toggleMenu} className="font-display text-4xl hover:text-amber-500 transition-colors border-b border-stone-800 pb-4">Cardápio</a>
           <a href="#about" onClick={toggleMenu} className="font-display text-4xl hover:text-amber-500 transition-colors border-b border-stone-800 pb-4">Sobre</a>
           <a href="#contact" onClick={toggleMenu} className="font-display text-4xl hover:text-amber-500 transition-colors border-b border-stone-800 pb-4">Contato</a>
+
+          {!user && (
+            <button
+              onClick={() => {
+                onOpenAuth();
+                toggleMenu();
+              }}
+              className="font-display text-4xl text-amber-500 text-left"
+            >
+              Entrar
+            </button>
+          )}
+
+          {user && (
+            <button
+              onClick={() => {
+                onLogout();
+                toggleMenu();
+              }}
+              className="font-display text-4xl text-red-500 text-left"
+            >
+              Sair
+            </button>
+          )}
         </div>
       </div>
     </>

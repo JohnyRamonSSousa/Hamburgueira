@@ -1,5 +1,5 @@
 {
-  "name": "je-burgues---o-futuro-do-sabor",
+  "name": "hamburgueria_je_burgues",
   "private": true,
   "version": "0.0.0",
   "type": "module",
@@ -7,7 +7,7 @@
     "dev": "vite",
     "build": "vite build",
     "preview": "vite preview",
-    "deploy:firebase": "npm run build && npx firebase deploy"
+    "deploy:firebase": "npm run build && npx -y firebase-tools deploy"
   },
   "dependencies": {
     "@google/genai": "^1.39.0",

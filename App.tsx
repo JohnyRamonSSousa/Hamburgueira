@@ -13,6 +13,7 @@ import OrderConfirmationModal from './components/OrderConfirmationModal';
 import { BurgerProduct, CartItem, User } from './types';
 import { db } from './firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
+import { signUp, login as firebaseLogin, logout as firebaseLogout, subscribeToAuthChanges } from './services/auth';
 
 const App: React.FC = () => {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -68,18 +69,19 @@ const App: React.FC = () => {
     setCartItems([]);
   };
 
-  const handleLogin = (name: string, email: string, isRegistering: boolean) => {
-    const userData: User = {
-      name,
-      email,
-      registeredAt: new Date()
-    };
-    setUser(userData);
+  const handleLogin = async (name: string, email: string, isRegistering: boolean, password?: string) => {
+    // Note: Actual login/signup is now handled inside AuthModal.tsx
+    // This function can be kept for UI transition or analytics if needed,
+    // but the state is updated via subscribeToAuthChanges.
     setIsAuthModalOpen(false);
   };
 
-  const handleLogout = () => {
-    setUser(null);
+  const handleLogout = async () => {
+    try {
+      await firebaseLogout();
+    } catch (error) {
+      console.error('Erro ao sair:', error);
+    }
   };
 
   const handleConfirmOrder = async (orderData: OrderData) => {
@@ -108,6 +110,13 @@ const App: React.FC = () => {
   };
 
   useEffect(() => {
+    const unsubscribe = subscribeToAuthChanges((newUser) => {
+      setUser(newUser);
+    });
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
     if (isCartOpen || isAuthModalOpen || isCustomBurgerOpen || isCheckoutOpen || isConfirmationOpen) {
       document.body.style.overflow = 'hidden';
     } else {
@@ -120,6 +129,9 @@ const App: React.FC = () => {
       <Navbar
         cartCount={cartItems.reduce((acc, item) => acc + item.quantity, 0)}
         onOpenCart={() => setIsCartOpen(true)}
+        user={user}
+        onLogout={handleLogout}
+        onOpenAuth={() => setIsAuthModalOpen(true)}
       />
 
       <main>
