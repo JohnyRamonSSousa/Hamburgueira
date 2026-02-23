@@ -7,9 +7,10 @@ interface NavbarProps {
   user: User | null;
   onLogout: () => void;
   onOpenAuth: () => void;
+  onOpenProfile: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, user, onLogout, onOpenAuth }) => {
+const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, user, onLogout, onOpenAuth, onOpenProfile }) => {
   const [isMenuOpen, setIsMenuOpen] = useState(false);
   const [isProfileOpen, setIsProfileOpen] = useState(false);
 
@@ -63,6 +64,15 @@ const Navbar: React.FC<NavbarProps> = ({ cartCount, onOpenCart, user, onLogout, 
                       <p className="text-[10px] font-bold uppercase tracking-widest text-stone-500">Olá,</p>
                       <p className="text-sm font-bold truncate text-stone-200">{user.name}</p>
                     </div>
+                    <button
+                      onClick={() => {
+                        onOpenProfile();
+                        setIsProfileOpen(false);
+                      }}
+                      className="w-full text-left px-4 py-3 text-xs font-bold uppercase tracking-widest text-stone-300 hover:bg-stone-800 rounded-xl transition-colors"
+                    >
+                      Meu Perfil
+                    </button>
                     <button
                       onClick={() => {
                         onLogout();

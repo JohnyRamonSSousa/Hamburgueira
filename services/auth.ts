@@ -28,6 +28,7 @@ export const subscribeToAuthChanges = (callback: (user: User | null) => void) =>
     return onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
         if (firebaseUser) {
             callback({
+                uid: firebaseUser.uid,
                 name: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Usuário',
                 email: firebaseUser.email || '',
                 registeredAt: new Date(firebaseUser.metadata.creationTime || Date.now())

@@ -21,6 +21,7 @@ export interface CartItem extends BurgerProduct {
 }
 
 export interface User {
+  uid: string;
   name: string;
   email: string;
   registeredAt: Date;

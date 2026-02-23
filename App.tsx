@@ -10,6 +10,7 @@ import CustomBurgerModal from './components/CustomBurgerModal';
 import ScrollToTop from './components/ScrollToTop';
 import Checkout, { OrderData } from './components/Checkout';
 import OrderConfirmationModal from './components/OrderConfirmationModal';
+import ProfileModal from './components/ProfileModal';
 import { BurgerProduct, CartItem, User } from './types';
 import { db } from './firebase';
 import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
@@ -23,6 +24,7 @@ const App: React.FC = () => {
   const [isCheckoutOpen, setIsCheckoutOpen] = useState(false);
   const [isConfirmationOpen, setIsConfirmationOpen] = useState(false);
   const [confirmedOrder, setConfirmedOrder] = useState<OrderData | null>(null);
+  const [isProfileOpen, setIsProfileOpen] = useState(false);
   const [user, setUser] = useState<User | null>(null);
 
   const handleAddToCart = (product: BurgerProduct, customIngredients?: string[]) => {
@@ -85,18 +87,21 @@ const App: React.FC = () => {
   };
 
   const handleConfirmOrder = async (orderData: OrderData) => {
+    if (!user) {
+      alert('Você precisa estar logado para finalizar o pedido.');
+      return;
+    }
     try {
-      console.log('Salvando pedido no Firebase:', orderData);
-
-      // Salvar pedido no Firestore
-      const orderDoc = await addDoc(collection(db, 'orders'), {
+      // Salvar pedido no Firestore com o uid do usuário
+      await addDoc(collection(db, 'orders'), {
         ...orderData,
+        userId: user.uid,
+        userName: user.name,
+        userEmail: user.email,
         items: cartItems,
         status: 'pending',
         createdAt: serverTimestamp()
       });
-
-      console.log('Pedido salvo com sucesso! ID:', orderDoc.id);
 
       // Atualizar UI
       setConfirmedOrder(orderData);
@@ -105,7 +110,7 @@ const App: React.FC = () => {
       setIsConfirmationOpen(true);
     } catch (error) {
       console.error('Erro ao salvar pedido:', error);
-      alert('Erro ao confirmar pedido. Tente novamente.');
+      alert('Erro ao confirmar pedido. Verifique sua conexão e tente novamente.');
     }
   };
 
@@ -117,12 +122,12 @@ const App: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    if (isCartOpen || isAuthModalOpen || isCustomBurgerOpen || isCheckoutOpen || isConfirmationOpen) {
+    if (isCartOpen || isAuthModalOpen || isCustomBurgerOpen || isCheckoutOpen || isConfirmationOpen || isProfileOpen) {
       document.body.style.overflow = 'hidden';
     } else {
       document.body.style.overflow = 'auto';
     }
-  }, [isCartOpen, isAuthModalOpen, isCustomBurgerOpen, isCheckoutOpen, isConfirmationOpen]);
+  }, [isCartOpen, isAuthModalOpen, isCustomBurgerOpen, isCheckoutOpen, isConfirmationOpen, isProfileOpen]);
 
   return (
     <div className="min-h-screen bg-stone-950">
@@ -132,6 +137,7 @@ const App: React.FC = () => {
         user={user}
         onLogout={handleLogout}
         onOpenAuth={() => setIsAuthModalOpen(true)}
+        onOpenProfile={() => setIsProfileOpen(true)}
       />
 
       <main>
@@ -245,6 +251,12 @@ const App: React.FC = () => {
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
         orderData={confirmedOrder}
+      />
+
+      <ProfileModal
+        isOpen={isProfileOpen}
+        onClose={() => setIsProfileOpen(false)}
+        user={user}
       />
 
       <style>{`

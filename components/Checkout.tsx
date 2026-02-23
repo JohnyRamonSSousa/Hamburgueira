@@ -1,4 +1,11 @@
 import React, { useState } from 'react';
+
+const formatPhone = (value: string) => {
+    const digits = value.replace(/\D/g, '').slice(0, 11);
+    if (digits.length <= 2) return `(${digits}`;
+    if (digits.length <= 7) return `(${digits.slice(0, 2)}) ${digits.slice(2)}`;
+    return `(${digits.slice(0, 2)}) ${digits.slice(2, 7)}-${digits.slice(7)}`;
+};
 import { CartItem } from '../types';
 
 interface CheckoutProps {
@@ -75,7 +82,7 @@ const Checkout: React.FC<CheckoutProps> = ({ isOpen, onClose, items, onConfirmOr
 
     return (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-            <div className="bg-stone-900 rounded-2xl max-w-4xl w-full max-h-[90vh] overflow-y-auto border border-stone-800 shadow-2xl">
+            <div className="bg-stone-900 rounded-2xl max-w-4xl w-full max-h-[90vh] flex flex-col border border-stone-800 shadow-2xl">
                 {/* Header */}
                 <div className="sticky top-0 bg-stone-900 border-b border-stone-800 p-6 flex items-center justify-between z-10">
                     <div>
@@ -92,7 +99,7 @@ const Checkout: React.FC<CheckoutProps> = ({ isOpen, onClose, items, onConfirmOr
                     </button>
                 </div>
 
-                <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6">
+                <div className="p-6 grid grid-cols-1 lg:grid-cols-3 gap-6 overflow-y-auto flex-1 pb-24 lg:pb-6">
                     {/* Coluna Principal - Formulário */}
                     <div className="lg:col-span-2 space-y-6">
                         {/* Dados Pessoais */}
@@ -118,9 +125,11 @@ const Checkout: React.FC<CheckoutProps> = ({ isOpen, onClose, items, onConfirmOr
                                         <input
                                             type="tel"
                                             value={personalInfo.phone}
-                                            onChange={(e) => setPersonalInfo({ ...personalInfo, phone: e.target.value })}
+                                            onChange={(e) => setPersonalInfo({ ...personalInfo, phone: formatPhone(e.target.value) })}
                                             className="w-full bg-stone-900 border border-stone-700 rounded-lg px-4 py-3 text-white focus:border-amber-500 focus:outline-none"
                                             placeholder="(11) 99999-9999"
+                                            maxLength={15}
+                                            inputMode="numeric"
                                         />
                                     </div>
                                 </div>
@@ -332,11 +341,11 @@ const Checkout: React.FC<CheckoutProps> = ({ isOpen, onClose, items, onConfirmOr
                                 </div>
                             </div>
 
-                            {/* Botão Finalizar */}
+                            {/* Botão Finalizar - desktop */}
                             <button
                                 onClick={handleConfirm}
                                 disabled={!isFormValid()}
-                                className={`w-full mt-6 py-4 rounded-lg font-semibold text-lg transition-all ${isFormValid()
+                                className={`hidden lg:block w-full mt-6 py-4 rounded-lg font-semibold text-lg transition-all ${isFormValid()
                                     ? 'bg-amber-500 hover:bg-amber-600 text-stone-950'
                                     : 'bg-stone-800 text-stone-600 cursor-not-allowed'
                                     }`}
@@ -345,13 +354,32 @@ const Checkout: React.FC<CheckoutProps> = ({ isOpen, onClose, items, onConfirmOr
                             </button>
 
                             {deliveryType === 'delivery' && !isFormValid() && (
-                                <p className="text-xs text-stone-500 mt-2 text-center">
+                                <p className="hidden lg:block text-xs text-stone-500 mt-2 text-center">
                                     Preencha o endereço de entrega
                                 </p>
                             )}
                         </div>
                     </div>
                 </div>
+            </div>
+
+            {/* Botão Finalizar - mobile fixo no rodapé */}
+            <div className="lg:hidden fixed bottom-0 left-0 right-0 p-4 bg-stone-900 border-t border-stone-800 z-50">
+                {deliveryType === 'delivery' && !isFormValid() && (
+                    <p className="text-xs text-stone-500 mb-2 text-center">
+                        Preencha todos os campos obrigatórios
+                    </p>
+                )}
+                <button
+                    onClick={handleConfirm}
+                    disabled={!isFormValid()}
+                    className={`w-full py-4 rounded-lg font-semibold text-lg transition-all ${isFormValid()
+                        ? 'bg-amber-500 hover:bg-amber-600 text-stone-950'
+                        : 'bg-stone-800 text-stone-600 cursor-not-allowed'
+                        }`}
+                >
+                    Finalizar Pedido
+                </button>
             </div>
         </div>
     );
