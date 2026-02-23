@@ -4,10 +4,11 @@ import { OrderData } from './Checkout';
 interface OrderConfirmationModalProps {
     isOpen: boolean;
     onClose: () => void;
+    onViewOrders: () => void;
     orderData: OrderData | null;
 }
 
-const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({ isOpen, onClose, orderData }) => {
+const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({ isOpen, onClose, onViewOrders, orderData }) => {
     if (!isOpen || !orderData) return null;
 
     const paymentMethodNames = {
@@ -25,7 +26,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({ isOpen,
         <div className="fixed inset-0 z-[200] flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
             <div className="bg-stone-900 rounded-3xl max-w-2xl w-full border border-amber-500/30 shadow-2xl overflow-hidden animate-scale-in">
                 {/* Header com animação */}
-                <div className="bg-gradient-to-r from-amber-500 to-amber-600 p-8 text-center relative overflow-hidden">
+                <div className="bg-gradient-to-r from-amber-500 to-amber-600 px-8 py-[5px] text-center relative overflow-hidden">
                     <div className="absolute inset-0 bg-[url('data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMjAwIiBoZWlnaHQ9IjIwMCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIj48ZGVmcz48cGF0dGVybiBpZD0iYSIgcGF0dGVyblVuaXRzPSJ1c2VyU3BhY2VPblVzZSIgd2lkdGg9IjQwIiBoZWlnaHQ9IjQwIj48cGF0aCBkPSJNMCAwaDQwdjQwSDB6IiBmaWxsPSJub25lIi8+PHBhdGggZD0iTTAgMGg0MHY0MEgweiIgZmlsbD0ibm9uZSIvPjxwYXRoIGQ9Ik0wIDBoNDB2NDBIMHoiIGZpbGw9Im5vbmUiLz48Y2lyY2xlIGN4PSIyMCIgY3k9IjIwIiByPSIxIiBmaWxsPSIjZmZmIiBmaWxsLW9wYWNpdHk9Ii4xIi8+PC9wYXR0ZXJuPjwvZGVmcz48cmVjdCB3aWR0aD0iMTAwJSIgaGVpZ2h0PSIxMDAlIiBmaWxsPSJ1cmwoI2EpIi8+PC9zdmc+')] opacity-20"></div>
 
                     {/* Botão Fechar X - Melhorado para maior visibilidade */}
@@ -41,19 +42,19 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({ isOpen,
                     </button>
 
                     <div className="relative z-10">
-                        <div className="w-16 h-16 bg-white rounded-full flex items-center justify-center mx-auto mb-3 animate-bounce-slow">
-                            <svg className="w-10 h-10 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center mx-auto mb-1 animate-bounce-slow">
+                            <svg className="w-8 h-8 text-amber-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2.5} d="M5 13l4 4L19 7" />
                             </svg>
                         </div>
-                        <h2 className="font-display text-xl text-stone-950 mb-2">PEDIDO CONFIRMADO!</h2>
+                        <h2 className="font-display text-xl text-stone-950 mb-1">PEDIDO CONFIRMADO!</h2>
                         <p className="text-stone-800 font-medium text-sm">Seu pedido foi recebido com sucesso</p>
                     </div>
                 </div>
 
-                <div className="p-8 space-y-6">
+                <div className="px-8 py-[4px] space-y-4">
                     {/* Informações do Pedido */}
-                    <div className="bg-stone-950 rounded-xl p-6 border border-stone-800">
+                    <div className="bg-stone-950 rounded-xl p-4 border border-stone-800">
                         <h3 className="font-display text-xl text-amber-500 mb-4 flex items-center gap-2">
                             <span>📋</span>
                             Detalhes do Pedido
@@ -90,7 +91,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({ isOpen,
                     </div>
 
                     {/* Informações de Contato */}
-                    <div className="bg-gradient-to-br from-stone-950 to-stone-900 rounded-xl p-6 border border-stone-800">
+                    <div className="bg-gradient-to-br from-stone-950 to-stone-900 rounded-xl p-4 border border-stone-800">
                         <h3 className="font-display text-xl text-amber-500 mb-4 flex items-center gap-2">
                             <span>📞</span>
                             Contato e Suporte
@@ -163,7 +164,7 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({ isOpen,
                     </div>
 
                     {/* Mensagem de Agradecimento */}
-                    <div className="text-center pt-4">
+                    <div className="text-center pt-2">
                         <p className="text-stone-400 text-sm mb-2">
                             🍔 Obrigado pela preferência!
                         </p>
@@ -174,10 +175,13 @@ const OrderConfirmationModal: React.FC<OrderConfirmationModalProps> = ({ isOpen,
 
                     {/* Botão Fechar */}
                     <button
-                        onClick={onClose}
-                        className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold uppercase tracking-widest rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98]"
+                        onClick={onViewOrders}
+                        className="w-full py-4 bg-amber-500 hover:bg-amber-600 text-stone-950 font-bold uppercase tracking-widest rounded-xl transition-all transform hover:scale-[1.02] active:scale-[0.98] shadow-lg flex items-center justify-center gap-2"
                     >
-                        Entendido
+                        <span>Ver Meus Pedidos</span>
+                        <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z" />
+                        </svg>
                     </button>
                 </div>
             </div>

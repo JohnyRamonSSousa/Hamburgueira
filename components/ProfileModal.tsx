@@ -39,6 +39,48 @@ const deliveryLabel: Record<string, string> = {
 const getUserInitials = (name: string) =>
     name.split(' ').map(n => n[0]).join('').toUpperCase().substring(0, 2);
 
+const OrderCard: React.FC<{ order: OrderRecord }> = ({ order }) => {
+    const st = statusLabel[order.status] ?? statusLabel.pending;
+    return (
+        <div className="bg-stone-950 rounded-xl border border-stone-800 overflow-hidden hover:border-amber-500/30 transition-all group">
+            {/* Card header */}
+            <div className="flex items-center justify-between px-4 py-3 border-b border-stone-800 bg-stone-900/40">
+                <div>
+                    <p className="text-[10px] text-stone-500 font-mono tracking-tighter">#{order.id.substring(0, 8).toUpperCase()}</p>
+                    <p className="text-white text-sm font-semibold mt-0.5">
+                        {order.createdAt.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
+                    </p>
+                </div>
+                <span className={`text-[10px] font-black px-2.5 py-1 rounded-full border uppercase tracking-wider ${st.color}`}>
+                    {st.label}
+                </span>
+            </div>
+
+            {/* Itens */}
+            <div className="px-4 py-3 space-y-1.5">
+                {order.items.map((item, i) => (
+                    <div key={i} className="flex justify-between text-sm">
+                        <span className="text-stone-300 font-medium">{item.quantity}x {item.name}</span>
+                        <span className="text-amber-500/80 font-bold italic">R$ {(item.price * item.quantity).toFixed(2)}</span>
+                    </div>
+                ))}
+            </div>
+
+            {/* Footer */}
+            <div className="flex items-center justify-between px-4 py-3 bg-stone-900/80 border-t border-stone-800">
+                <div className="flex gap-3 text-[10px] text-stone-500 font-bold uppercase tracking-tight">
+                    <span className="flex items-center gap-1">{deliveryLabel[order.deliveryType]}</span>
+                    <span>·</span>
+                    <span className="flex items-center gap-1">{paymentLabel[order.paymentMethod]}</span>
+                </div>
+                <div className="text-white font-display text-sm tracking-wide">
+                    TOTAL: <span className="text-amber-500 font-bold italic ml-1">R$ {order.total.toFixed(2)}</span>
+                </div>
+            </div>
+        </div>
+    );
+};
+
 const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user }) => {
     const [orders, setOrders] = useState<OrderRecord[]>([]);
     const [loading, setLoading] = useState(false);
@@ -51,8 +93,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user }) =>
             try {
                 const q = query(
                     collection(db, 'orders'),
-                    where('userId', '==', user.uid),
-                    orderBy('createdAt', 'desc')
+                    where('userId', '==', user.uid)
                 );
                 const snapshot = await getDocs(q);
                 const fetched: OrderRecord[] = snapshot.docs.map(doc => {
@@ -67,6 +108,10 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user }) =>
                         paymentMethod: data.paymentMethod ?? 'pix',
                     };
                 });
+
+                // Ordenar no cliente para evitar necessidade de índices no Firestore
+                fetched.sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+
                 setOrders(fetched);
             } catch (err) {
                 console.error('Erro ao buscar pedidos:', err);
@@ -115,12 +160,7 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user }) =>
                     </div>
 
                     {/* Histórico de Pedidos */}
-                    <div className="p-6">
-                        <h3 className="font-display text-xl text-white mb-4 flex items-center gap-2">
-                            <span className="text-amber-500">🧾</span>
-                            Histórico de Pedidos
-                        </h3>
-
+                    <div className="p-6 space-y-8">
                         {loading ? (
                             <div className="flex items-center justify-center py-12">
                                 <div className="w-8 h-8 border-2 border-amber-500 border-t-transparent rounded-full animate-spin" />
@@ -132,49 +172,39 @@ const ProfileModal: React.FC<ProfileModalProps> = ({ isOpen, onClose, user }) =>
                                 <p className="text-stone-600 text-sm mt-1">Seu histórico aparecerá aqui após o primeiro pedido</p>
                             </div>
                         ) : (
-                            <div className="space-y-4">
-                                {orders.map(order => {
-                                    const st = statusLabel[order.status] ?? statusLabel.pending;
-                                    return (
-                                        <div key={order.id} className="bg-stone-950 rounded-xl border border-stone-800 overflow-hidden">
-                                            {/* Card header */}
-                                            <div className="flex items-center justify-between px-4 py-3 border-b border-stone-800">
-                                                <div>
-                                                    <p className="text-xs text-stone-500 font-mono">#{order.id.substring(0, 8).toUpperCase()}</p>
-                                                    <p className="text-white text-sm font-semibold mt-0.5">
-                                                        {order.createdAt.toLocaleDateString('pt-BR', { day: '2-digit', month: 'short', year: 'numeric', hour: '2-digit', minute: '2-digit' })}
-                                                    </p>
-                                                </div>
-                                                <span className={`text-xs font-bold px-3 py-1 rounded-full border ${st.color}`}>
-                                                    {st.label}
-                                                </span>
-                                            </div>
-
-                                            {/* Itens */}
-                                            <div className="px-4 py-3 space-y-1.5">
-                                                {order.items.map((item, i) => (
-                                                    <div key={i} className="flex justify-between text-sm">
-                                                        <span className="text-stone-300">{item.quantity}x {item.name}</span>
-                                                        <span className="text-amber-500 font-semibold">R$ {(item.price * item.quantity).toFixed(2)}</span>
-                                                    </div>
-                                                ))}
-                                            </div>
-
-                                            {/* Footer */}
-                                            <div className="flex items-center justify-between px-4 py-3 bg-stone-900 border-t border-stone-800">
-                                                <div className="flex gap-3 text-xs text-stone-500">
-                                                    <span>{deliveryLabel[order.deliveryType]}</span>
-                                                    <span>·</span>
-                                                    <span>{paymentLabel[order.paymentMethod]}</span>
-                                                </div>
-                                                <div className="text-white font-display text-base">
-                                                    Total: <span className="text-amber-500">R$ {order.total.toFixed(2)}</span>
-                                                </div>
-                                            </div>
+                            <>
+                                {/* Pedidos em Andamento */}
+                                {orders.some(o => o.status !== 'delivered') && (
+                                    <div>
+                                        <h3 className="font-display text-xl text-white mb-4 flex items-center gap-2">
+                                            <span className="text-amber-500">🔥</span>
+                                            Pedidos em Andamento
+                                        </h3>
+                                        <div className="grid grid-cols-1 gap-4">
+                                            {orders.filter(o => o.status !== 'delivered').map(order => (
+                                                <OrderCard key={order.id} order={order} />
+                                            ))}
                                         </div>
-                                    );
-                                })}
-                            </div>
+                                    </div>
+                                )}
+
+                                {/* Histórico Completo */}
+                                <div>
+                                    <h3 className="font-display text-xl text-white mb-4 flex items-center gap-2">
+                                        <span className="text-stone-500">🧾</span>
+                                        Histórico de Pedidos
+                                    </h3>
+                                    <div className="grid grid-cols-1 gap-4">
+                                        {orders.filter(o => o.status === 'delivered').length === 0 ? (
+                                            <p className="text-stone-500 text-sm italic ml-2">Nenhum pedido finalizado ainda.</p>
+                                        ) : (
+                                            orders.filter(o => o.status === 'delivered').map(order => (
+                                                <OrderCard key={order.id} order={order} />
+                                            ))
+                                        )}
+                                    </div>
+                                </div>
+                            </>
                         )}
                     </div>
                 </div>

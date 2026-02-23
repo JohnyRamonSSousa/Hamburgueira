@@ -250,6 +250,10 @@ const App: React.FC = () => {
       <OrderConfirmationModal
         isOpen={isConfirmationOpen}
         onClose={() => setIsConfirmationOpen(false)}
+        onViewOrders={() => {
+          setIsConfirmationOpen(false);
+          setIsProfileOpen(true);
+        }}
         orderData={confirmedOrder}
       />
 
